@@ -19,28 +19,28 @@ importers:
         version: 19.2.0(react@19.2.0)
     devDependencies:
       '@tailwindcss/postcss':
-        specifier: ^4
+        specifier: 4.1.16
         version: 4.1.16
       '@types/node':
-        specifier: ^20
-        version: 20.19.24
+        specifier: 22.18.13
+        version: 22.18.13
       '@types/react':
-        specifier: ^19
+        specifier: 19.2.2
         version: 19.2.2
       '@types/react-dom':
-        specifier: ^19
+        specifier: 19.2.2
         version: 19.2.2(@types/react@19.2.2)
       eslint:
-        specifier: ^9
+        specifier: 9.39.0
         version: 9.39.0(jiti@2.6.1)
       eslint-config-next:
         specifier: 16.0.1
         version: 16.0.1(@typescript-eslint/parser@8.46.2(eslint@9.39.0(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.0(jiti@2.6.1))(typescript@5.9.3)
       tailwindcss:
-        specifier: ^4
+        specifier: 4.1.16
         version: 4.1.16
       typescript:
-        specifier: ^5
+        specifier: 5.9.3
         version: 5.9.3
 
 packages:
@@ -500,8 +500,8 @@ packages:
   '@types/json5@0.0.29':
     resolution: {integrity: sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==}
 
-  '@types/node@20.19.24':
-    resolution: {integrity: sha512-FE5u0ezmi6y9OZEzlJfg37mqqf6ZDSF2V/NLjUyGrR9uTZ7Sb9F7bLNZ03S4XVUNRWGA7Ck4c1kK+YnuWjl+DA==}
+  '@types/node@22.18.13':
+    resolution: {integrity: sha512-Bo45YKIjnmFtv6I1TuC8AaHBbqXtIo+Om5fE4QiU1Tj8QR/qt+8O3BAtOimG5IFmwaWiPmB3Mv3jtYzBA4Us2A==}
 
   '@types/react-dom@19.2.2':
     resolution: {integrity: sha512-9KQPoO6mZCi7jcIStSnlOWn2nEF3mNmyr3rIAsGnAbQKYbRLyqmeSc39EVgtxXVia+LMT8j3knZLAZAh+xLmrw==}
@@ -2322,7 +2322,7 @@ snapshots:
 
   '@types/json5@0.0.29': {}
 
-  '@types/node@20.19.24':
+  '@types/node@22.18.13':
     dependencies:
       undici-types: 6.21.0
 
