@@ -11,6 +11,9 @@ export function HeroSection() {
         <p className="text-lg text-muted-foreground sm:text-xl">
           Building healthcare software that doesn&apos;t break at 2am
         </p>
+        <p className="text-sm text-accent/80 italic pt-2">
+          Portfolio under construction
+        </p>
       </div>
 
       <p className="mb-12 max-w-2xl text-base text-muted-foreground sm:text-lg leading-relaxed">
