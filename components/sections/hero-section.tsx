@@ -6,20 +6,17 @@ export function HeroSection() {
     <section className="section-container flex flex-col items-center justify-center text-center">
       <div className="mb-6 space-y-2">
         <h1 className="text-4xl font-bold text-foreground sm:text-5xl lg:text-6xl text-balance">
-          Full-Stack Engineer
+          Senior Full-Stack Engineer
         </h1>
         <p className="text-lg text-muted-foreground sm:text-xl">
-          Building healthcare software that doesn&apos;t break at 2am
-        </p>
-        <p className="text-sm text-accent/80 italic pt-2">
-          Portfolio under construction
+          Turning complex requirements into reliable, production-ready systems
         </p>
       </div>
 
       <p className="mb-12 max-w-2xl text-base text-muted-foreground sm:text-lg leading-relaxed">
-        5+ years specializing in EMR systems, HIPAA compliance, and
-        production-ready healthcare software that healthcare professionals
-        actually use and rely on.
+        8+ years of full-stack development, with 6+ years specialized in
+        healthcare systems, EMR architecture, HIPAA compliance, and building
+        scalable applications trusted by thousands of users.
       </p>
 
       <div className="flex flex-wrap justify-center gap-3 sm:gap-4">

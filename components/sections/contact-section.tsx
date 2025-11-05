@@ -13,8 +13,10 @@ export function ContactSection() {
         </div>
 
         <p className="max-w-2xl text-base text-muted-foreground leading-relaxed sm:text-lg">
-          Interested in working together? Have questions about healthcare
-          software architecture? I&apos;d love to hear from you.
+          Open to senior full-stack engineering opportunities. While I
+          specialize in healthcare systems, I&apos;m interested in challenging
+          engineering roles across industries. Let&apos;s connect to discuss
+          potential collaborations.
         </p>
 
         <div className="flex flex-wrap gap-3 sm:gap-4">

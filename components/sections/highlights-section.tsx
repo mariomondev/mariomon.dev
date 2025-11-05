@@ -2,10 +2,11 @@ import { CheckCircleIcon } from "lucide-react";
 
 export function HighlightsSection() {
   const highlights = [
-    "Built EMR systems from scratch serving thousands of healthcare professionals",
-    "Created automation bots saving 100+ hours per month in manual processes",
-    "Managed legacy system migrations with zero downtime",
-    "Architected HIPAA-compliant infrastructure with comprehensive audit trails",
+    "Architected and maintain enterprise EMR platform serving 100+ healthcare providers and 100K+ patients across multiple facilities",
+    "Developed insurance verification automation processing 200+ patients daily with 90%+ success rate, saving 150+ hours of manual work monthly",
+    "Built native iOS application for healthcare providers enabling offline-first patient care with wound photography, measurements, and prescription management",
+    "Mentor development teams and drive architectural decisions as primary technical authority in a fast-growing healthcare startup",
+    "Building open-source EMR showcase to demonstrate architecture and coding practices (coming soon)",
   ];
 
   return (
