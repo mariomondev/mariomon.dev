@@ -18,6 +18,12 @@ const nextConfig: NextConfig = {
             value: "strict-origin-when-cross-origin",
           },
 
+          // Get back X-Content-Type-Options
+          {
+            key: "X-Content-Type-Options",
+            value: "nosniff",
+          },
+
           // Critical: CSP (Vercel doesn't provide this)
           {
             key: "Content-Security-Policy",
