@@ -44,7 +44,7 @@ export function HeroSection() {
         </Button>
         <Button asChild variant="ghost" size="lg">
           <a
-            href="mailto:contact@mariomon.dev"
+            href="mailto:mariomontano.dev@gmail.com"
             className="flex items-center gap-2 border"
           >
             <MailIcon className="size-4" />

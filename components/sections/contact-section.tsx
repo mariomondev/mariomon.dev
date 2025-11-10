@@ -22,7 +22,7 @@ export function ContactSection() {
         <div className="flex flex-wrap gap-3 sm:gap-4">
           <Button asChild variant="default" size="lg">
             <a
-              href="mailto:contact@mariomon.dev"
+              href="mailto:mariomontano.dev@gmail.com"
               className="flex items-center gap-2"
             >
               <MailIcon className="size-5" />

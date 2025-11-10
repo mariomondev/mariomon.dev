@@ -16,32 +16,64 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  applicationName: "Mario Montano Portfolio",
   title:
     "Mario Montano | Senior Full-Stack Engineer | TypeScript, React, Next.js",
   description:
     "Senior full-stack engineer with 8+ years of experience building scalable web applications. Specialized expertise in healthcare/EMR systems, HIPAA compliance, and end-to-end product development using TypeScript, React, Next.js, and Node.js.",
   keywords: [
-    "Senior Full-Stack Engineer",
-    "Full-Stack Developer",
-    "TypeScript Developer",
-    "React Developer",
-    "Next.js Developer",
-    "Node.js Developer",
-    "PostgreSQL Developer",
-    "Full-Stack Software Engineer",
-    "Web Application Developer",
-    "Healthcare Software Engineer",
-    "EMR Developer",
-    "EHR Developer",
-    "HIPAA Compliant Software Engineer",
-    "Medical Software Engineer",
-    "iOS Developer",
+    // My Brand
+    "Mario Montano",
+    "Mario Montaño",
+    "Mario Montano Developer",
+    "Mario Montano Portfolio",
+    "mariomon.dev",
+    "mariomondev",
+
+    // Core Identity (Long-tail)
+    "Senior Full-Stack Engineer Healthcare",
+    "Healthcare Software Engineer TypeScript",
+    "EMR Developer Full-Stack",
+    "HIPAA Compliant Software Developer",
+
+    // Technical Stack
+    "TypeScript React Next.js Developer",
+    "Node.js PostgreSQL Engineer",
+    "Full-Stack TypeScript Engineer",
+    "iOS Swift Developer",
+
+    // Niche/Specialization
+    "Healthcare EMR Software Engineer",
+    "HIPAA Compliant Web Applications",
+    "Medical Software Full-Stack Developer",
+    "EHR System Developer",
+    "Healthcare Technology Engineer",
+
+    // Experience Level
+    "Senior Engineer 8 Years Experience",
+    "End-to-End Product Development",
+
+    // Remote/Location (update with your actual location)
+    "Remote Full-Stack Developer",
   ],
-  authors: [{ name: "Mario Montano" }],
+  authors: [{ name: "Mario Montano", url: "https://mariomon.dev" }],
   creator: "Mario Montano",
   metadataBase: new URL("https://mariomon.dev"),
   alternates: {
     canonical: "/",
+  },
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/icon.png", type: "image/png", sizes: "any" },
+    ],
+    apple: { url: "/apple-icon.png", type: "image/png" },
+    other: [
+      {
+        rel: "icon",
+        url: "/favicon.ico",
+      },
+    ],
   },
   openGraph: {
     type: "website",
@@ -66,6 +98,7 @@ export const metadata: Metadata = {
     description:
       "Senior full-stack engineer with 8+ years of experience building scalable web applications. Specialized expertise in healthcare/EMR systems, HIPAA compliance, and end-to-end product development using TypeScript, React, Next.js, and Node.js.",
     images: ["/og-image.png"],
+    creator: "@mariomondev",
   },
   robots: {
     index: true,
