@@ -29,6 +29,7 @@ export const metadata: Metadata = {
     "Mario Montano Portfolio",
     "mariomon.dev",
     "mariomondev",
+    "mariomon dev",
 
     // Core Identity (Long-tail)
     "Senior Full-Stack Engineer Healthcare",

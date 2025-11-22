@@ -4,8 +4,14 @@ import { GithubIcon, MailIcon, LinkedinIcon } from "lucide-react";
 export function HeroSection() {
   return (
     <section className="section-container flex flex-col items-center justify-center text-center">
-      <div className="mb-6 space-y-2">
+      <div className="mb-6 space-y-4">
+        <div className="inline-flex items-center rounded-full border px-2.5 py-0.5 text-xs font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent bg-secondary text-secondary-foreground hover:bg-secondary/80">
+          mariomon.dev
+        </div>
         <h1 className="text-4xl font-bold text-foreground sm:text-5xl lg:text-6xl text-balance">
+          <span className="block text-2xl sm:text-3xl text-primary mb-2 font-medium">
+            Mario Montano
+          </span>
           Senior Full-Stack Engineer
         </h1>
         <p className="text-lg text-muted-foreground sm:text-xl">
