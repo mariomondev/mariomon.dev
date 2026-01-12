@@ -6,7 +6,6 @@ export function HighlightsSection() {
     "Developed insurance verification automation processing 200+ patients daily with 90%+ success rate, saving 150+ hours of manual work monthly",
     "Built native iOS application for healthcare providers enabling offline-first patient care with wound photography, measurements, and prescription management",
     "Mentor development teams and drive architectural decisions as primary technical authority in a fast-growing healthcare startup",
-    "Building open-source EMR showcase to demonstrate architecture and coding practices (coming soon)",
   ];
 
   return (

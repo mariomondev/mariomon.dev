@@ -33,6 +33,7 @@ const nextConfig: NextConfig = {
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com data:",
               "img-src 'self' data: https: blob:",
+              "media-src 'self' https://assets.mariomon.dev",
               "connect-src 'self' https://vitals.vercel-insights.com https://*.vercel-insights.com https://cloudflareinsights.com",
               "frame-ancestors 'none'",
               "base-uri 'self'",
