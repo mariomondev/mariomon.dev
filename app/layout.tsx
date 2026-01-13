@@ -181,6 +181,9 @@ export default function RootLayout({
       data-darkreader-scheme="dark"
     >
       <head>
+        {/* Preconnect to external origins for faster resource loading */}
+        <link rel="preconnect" href="https://assets.mariomon.dev" />
+        <link rel="dns-prefetch" href="https://assets.mariomon.dev" />
         <Script
           id="person-schema"
           type="application/ld+json"
