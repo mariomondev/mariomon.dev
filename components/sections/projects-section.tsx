@@ -117,7 +117,26 @@ export function ProjectsSection() {
       tech: ["TypeScript", "Node.js", "React", "PostgreSQL", "Puppeteer"],
       icon: ShieldCheckIcon,
       accentGradient: "from-cyan-500 via-accent to-teal-500",
-      // Screenshots and video to be added later
+      screenshots: [
+        {
+          src: "https://assets.mariomon.dev/insverify-1.jpg",
+          alt: "Queue management dashboard",
+        },
+        {
+          src: "https://assets.mariomon.dev/insverify-2.jpg",
+          alt: "Patient verification status list",
+        },
+        {
+          src: "https://assets.mariomon.dev/insverify-3.jpg",
+          alt: "Eligibility results and documents",
+        },
+        {
+          src: "https://assets.mariomon.dev/insverify-4.jpg",
+          alt: "Verification history and audit trail",
+        },
+      ],
+      videoSrc: "https://assets.mariomon.dev/insurance-verification.mp4",
+      videoPoster: "https://assets.mariomon.dev/insverify-1.jpg",
     },
   ];
 
