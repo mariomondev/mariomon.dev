@@ -12,6 +12,7 @@ import {
   ShieldCheckIcon,
   ChevronDownIcon,
   ExternalLinkIcon,
+  CircleDotIcon,
   type LucideIcon,
 } from "lucide-react";
 import Image from "next/image";
@@ -137,6 +138,36 @@ export function ProjectsSection() {
       ],
       videoSrc: "https://assets.mariomon.dev/insurance-verification.mp4",
       videoPoster: "https://assets.mariomon.dev/insverify-1.jpg",
+    },
+    {
+      id: "pulse",
+      title: "Pulse",
+      tagline: "Apple-style scrollytelling landing page",
+      description:
+        "A showcase landing page demonstrating the Apple-style scrollytelling technique with scroll-driven canvas animations. Features frame sequence animations where video frames render based on scroll position, creating smooth product reveals and 360° rotations. Built with Astro for zero-JS-by-default performance, GSAP ScrollTrigger for animations, and AI-generated assets from Google Flow and Nano Banana Pro.",
+      tech: ["Astro", "TypeScript", "GSAP", "Tailwind CSS", "Canvas API"],
+      icon: CircleDotIcon,
+      accentGradient: "from-emerald-500 via-teal-500 to-cyan-500",
+      screenshots: [
+        {
+          src: "https://assets.mariomon.dev/pulse-hero.png",
+          alt: "Hero section with smart ring and health metrics",
+        },
+        {
+          src: "https://assets.mariomon.dev/pulse-features.png",
+          alt: "Features section with stress detection and focus zones",
+        },
+        {
+          src: "https://assets.mariomon.dev/pulse-app.png",
+          alt: "Companion app preview with sleep tracking dashboard",
+        },
+        {
+          src: "https://assets.mariomon.dev/pulse-how-it-works.png",
+          alt: "How it works section with step-by-step guide",
+        },
+      ],
+      videoPoster: "https://assets.mariomon.dev/pulse-hero.png",
+      liveUrl: "https://pulse.mariomon.dev",
     },
   ];
 
