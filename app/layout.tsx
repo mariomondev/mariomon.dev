@@ -182,6 +182,7 @@ export default function RootLayout({
     >
       <head>
         {/* Preconnect to external origins for faster resource loading */}
+        <meta name="darkreader-lock" />
         <link rel="preconnect" href="https://assets.mariomon.dev" />
         <link rel="dns-prefetch" href="https://assets.mariomon.dev" />
         <Script

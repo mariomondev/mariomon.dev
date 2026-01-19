@@ -14,7 +14,7 @@ The application follows a clear component hierarchy:
 
 - `components/ui/` - shadcn/ui components (Button, Card, DropdownMenu, etc.)
 - `components/sections/` - Page sections (Header, Hero, About, TechStack, Highlights, Projects, Contact, Footer)
-- `components/theme/` - Theme management (ThemeProvider, ModeToggle)
+- `components/theme/` - Theme management (ThemeProvider, ThemeToggle)
 - `lib/` - Utility functions (mainly `cn()` for class merging)
 
 ### Page Structure
@@ -34,7 +34,7 @@ The homepage ([app/page.tsx](app/page.tsx)) is composed of section components in
 **IMPORTANT**: This project uses `next-themes` for theme management. DO NOT implement custom dark mode solutions with localStorage or manual DOM manipulation.
 
 - ThemeProvider wraps the app in [app/layout.tsx](app/layout.tsx)
-- ModeToggle component ([components/theme/theme-toggle.tsx](components/theme/theme-toggle.tsx)) provides Light/Dark/System theme options
+- ThemeToggle component ([components/theme/theme-toggle.tsx](components/theme/theme-toggle.tsx)) provides Light/Dark/System theme options
 - Always use the existing `next-themes` implementation when working with themes
 
 ### shadcn/ui Configuration
