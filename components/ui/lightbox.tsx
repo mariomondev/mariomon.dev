@@ -66,6 +66,9 @@ export function Lightbox({
           <DialogPrimitive.Title className="sr-only">
             {currentImage?.alt || "Image viewer"}
           </DialogPrimitive.Title>
+          <DialogPrimitive.Description className="sr-only">
+            Viewing image {(selectedIndex ?? 0) + 1} of {images.length}
+          </DialogPrimitive.Description>
 
           {/* Close button - top right, refined */}
           <button
