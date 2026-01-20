@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Analytics } from "@vercel/analytics/next";
@@ -174,47 +173,18 @@ export default function RootLayout({
   };
 
   return (
-    <html
-      lang="en"
-      suppressHydrationWarning
-      data-darkreader-mode="dynamic"
-      data-darkreader-scheme="dark"
-    >
+    <html lang="en" data-darkreader-mode="dynamic"                                                                                                                                         
+    data-darkreader-scheme="dark" 
+    suppressHydrationWarning>
       <head>
-        {/* Critical: Prevent theme flash with inline styles that match dark mode */}
-        <style
-          dangerouslySetInnerHTML={{
-            __html: `
-              html.dark { background-color: #1a1a1d; color: #fafafa; }
-              html:not(.dark) { background-color: #fff; color: #1a1a1d; }
-            `,
-          }}
-        />
-        {/* Prevent theme flash - runs before paint */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              (function() {
-                try {
-                  var theme = localStorage.getItem('theme');
-                  if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                    document.documentElement.classList.add('dark');
-                  }
-                } catch (e) {}
-              })();
-            `,
-          }}
-        />
         <meta name="darkreader-lock" />
         <link rel="preconnect" href="https://assets.mariomon.dev" />
         <link rel="dns-prefetch" href="https://assets.mariomon.dev" />
-        <Script
-          id="person-schema"
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
         />
-        <Script
-          id="website-schema"
+        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
@@ -224,7 +194,7 @@ export default function RootLayout({
       >
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >
