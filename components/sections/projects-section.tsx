@@ -2,6 +2,7 @@
 
 import { Card } from "@/components/ui/card";
 import { Lightbox } from "@/components/ui/lightbox";
+import { Button } from "@/components/ui/button";
 import {
   PlayIcon,
   Building2Icon,
@@ -166,6 +167,7 @@ export function ProjectsSection() {
           alt: "How it works section with step-by-step guide",
         },
       ],
+      videoSrc: "https://assets.mariomon.dev/pulse-demo.mp4",
       videoPoster: "https://assets.mariomon.dev/pulse-hero.png",
       liveUrl: "https://pulse.mariomon.dev",
     },
@@ -388,10 +390,7 @@ export function ProjectsSection() {
                   )}
 
                   {/* Collapsed Card Header - Always visible and clickable */}
-                  <button
-                    onClick={() => handleCardClick(project.id)}
-                    className="relative w-full text-left p-5 sm:p-6 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset"
-                  >
+                  <div className="relative w-full p-5 sm:p-6">
                     <div className="flex items-center gap-4">
                       {/* Icon */}
                       <div
@@ -407,26 +406,50 @@ export function ProjectsSection() {
                         />
                       </div>
 
-                      {/* Title and Tagline */}
-                      <div className="flex-1 min-w-0">
+                      {/* Title and Tagline - Clickable */}
+                      <button
+                        onClick={() => handleCardClick(project.id)}
+                        className="flex-1 min-w-0 text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset rounded"
+                      >
                         <h4 className="font-semibold text-foreground text-lg leading-tight tracking-tight">
                           {project.title}
                         </h4>
                         <p className="text-sm text-muted-foreground mt-0.5 line-clamp-1">
                           {project.tagline}
                         </p>
-                      </div>
+                      </button>
+
+                      {/* Live Demo Button */}
+                      {project.liveUrl && (
+                        <Button
+                          asChild
+                          size="sm"
+                          onClick={(e) => e.stopPropagation()}
+                          className="shrink-0 bg-accent text-white hover:bg-accent/90 border-accent shadow-sm shadow-accent/20"
+                        >
+                          <a
+                            href={project.liveUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={(e) => e.stopPropagation()}
+                          >
+                            <ExternalLinkIcon className="h-4 w-4" />
+                            Live Demo
+                          </a>
+                        </Button>
+                      )}
 
                       {/* Expand/Collapse indicator */}
-                      <div
-                        className={`flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 transition-all duration-300 ${
+                      <button
+                        onClick={() => handleCardClick(project.id)}
+                        className={`flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 transition-all duration-300 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset ${
                           isExpanded
                             ? "rotate-180 bg-accent/20"
                             : "group-hover:bg-accent/15"
                         }`}
                       >
                         <ChevronDownIcon className="h-4 w-4 text-accent" />
-                      </div>
+                      </button>
                     </div>
 
                     {/* Tech stack pills - visible in collapsed state */}
@@ -451,7 +474,7 @@ export function ProjectsSection() {
                         </span>
                       )}
                     </div>
-                  </button>
+                  </div>
 
                   {/* Expanded Content */}
                   <div
@@ -576,20 +599,6 @@ export function ProjectsSection() {
                           </span>
                         ))}
                       </div>
-
-                      {/* Live URL if available */}
-                      {project.liveUrl && (
-                        <a
-                          href={project.liveUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          onClick={(e) => e.stopPropagation()}
-                          className="inline-flex items-center gap-2 text-accent hover:text-accent/80 transition-colors font-medium"
-                        >
-                          <ExternalLinkIcon className="h-4 w-4" />
-                          View Live Demo
-                        </a>
-                      )}
                     </div>
                   </div>
                 </Card>
