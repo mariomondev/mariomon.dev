@@ -9,7 +9,7 @@ export function ContactSection() {
           <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
             Get In Touch
           </h2>
-          <div className="h-1 w-12 bg-accent rounded" />
+          <div className="h-1 w-12 bg-primary rounded" />
         </div>
 
         <p className="max-w-2xl text-base text-muted-foreground leading-relaxed sm:text-lg">

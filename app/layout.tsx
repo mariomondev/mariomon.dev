@@ -181,7 +181,21 @@ export default function RootLayout({
       data-darkreader-scheme="dark"
     >
       <head>
-        {/* Preconnect to external origins for faster resource loading */}
+        {/* Prevent theme flash - runs before paint */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  var theme = localStorage.getItem('theme');
+                  if (theme === 'dark' || (!theme && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                    document.documentElement.classList.add('dark');
+                  }
+                } catch (e) {}
+              })();
+            `,
+          }}
+        />
         <meta name="darkreader-lock" />
         <link rel="preconnect" href="https://assets.mariomon.dev" />
         <link rel="dns-prefetch" href="https://assets.mariomon.dev" />

@@ -29,7 +29,7 @@ export function TechStackSection() {
           <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
             Tech Stack
           </h2>
-          <div className="h-1 w-12 bg-accent rounded" />
+          <div className="h-1 w-12 bg-primary rounded" />
         </div>
 
         <div className="space-y-6">
@@ -41,7 +41,7 @@ export function TechStackSection() {
               {primaryStack.map((tech) => (
                 <div
                   key={tech.name}
-                  className="flex flex-col items-center justify-center rounded-lg border border-border/50 bg-card p-3 sm:p-4 transition-colors hover:border-accent/50 hover:bg-accent/5"
+                  className="flex flex-col items-center justify-center rounded-lg border border-border/50 bg-card p-3 sm:p-4 transition-colors hover:border-primary/50 hover:bg-primary/5"
                 >
                   <span className="font-semibold text-foreground text-sm sm:text-base">
                     {tech.name}
@@ -62,7 +62,7 @@ export function TechStackSection() {
               {infrastructure.map((tech) => (
                 <div
                   key={tech.name}
-                  className="flex flex-col items-center justify-center rounded-lg border border-border/50 bg-card/50 p-3 sm:p-4 transition-colors hover:border-accent/50 hover:bg-accent/5"
+                  className="flex flex-col items-center justify-center rounded-lg border border-border/50 bg-card/50 p-3 sm:p-4 transition-colors hover:border-primary/50 hover:bg-primary/5"
                 >
                   <span className="font-semibold text-foreground text-sm sm:text-base">
                     {tech.name}
@@ -83,7 +83,7 @@ export function TechStackSection() {
               {maintenanceStack.map((tech) => (
                 <div
                   key={tech.name}
-                  className="flex flex-col items-center justify-center rounded-lg border border-border/50 bg-card/50 p-3 sm:p-4 transition-colors hover:border-accent/50 hover:bg-accent/5"
+                  className="flex flex-col items-center justify-center rounded-lg border border-border/50 bg-card/50 p-3 sm:p-4 transition-colors hover:border-primary/50 hover:bg-primary/5"
                 >
                   <span className="font-semibold text-foreground text-sm sm:text-base">
                     {tech.name}

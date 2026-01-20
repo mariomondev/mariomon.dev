@@ -57,7 +57,7 @@ export function ProjectsSection() {
       tech: ["TypeScript", "Next.js", "React", "PostgreSQL", "PHP"],
       note: "Proprietary healthcare system (NDA protected)",
       icon: Building2Icon,
-      accentGradient: "from-accent via-accent/80 to-teal-400",
+      accentGradient: "from-primary via-primary/80 to-emerald-400",
     },
     {
       title: "Insurance Verification Automation System",
@@ -66,7 +66,7 @@ export function ProjectsSection() {
       tech: ["TypeScript", "Node.js", "PostgreSQL", "Automation"],
       note: "Enterprise confidential project",
       icon: BotIcon,
-      accentGradient: "from-cyan-500 via-accent to-teal-500",
+      accentGradient: "from-primary via-emerald-500 to-teal-500",
     },
     {
       title: "Healthcare Provider Mobile App",
@@ -75,7 +75,7 @@ export function ProjectsSection() {
       tech: ["Swift", "SwiftUI", "REST APIs", "Offline-First"],
       note: "Client proprietary application",
       icon: SmartphoneIcon,
-      accentGradient: "from-teal-400 via-emerald-500 to-accent",
+      accentGradient: "from-teal-400 via-emerald-500 to-primary",
     },
   ];
 
@@ -88,7 +88,7 @@ export function ProjectsSection() {
         "A personal project demonstrating modern EHR architecture and interface design patterns developed through years of healthcare software experience. Features patient management, clinical notes with SOAP format, vitals tracking, lab results, provider profiles, and multi-facility support. Built to showcase full-stack development capabilities in healthcare software.",
       tech: ["TypeScript", "Next.js", "React", "PostgreSQL", "Tailwind CSS"],
       icon: ActivityIcon,
-      accentGradient: "from-accent via-teal-400 to-emerald-500",
+      accentGradient: "from-primary via-teal-400 to-emerald-500",
       screenshots: [
         {
           src: "https://assets.mariomon.dev/patient-list.jpg",
@@ -118,7 +118,7 @@ export function ProjectsSection() {
         "A demonstration of automated insurance verification workflows. Features real-time eligibility checks, batch processing capabilities, and intelligent error handling with manual review queues. Built to showcase automation architecture patterns in healthcare administration.",
       tech: ["TypeScript", "Node.js", "React", "PostgreSQL", "Puppeteer"],
       icon: ShieldCheckIcon,
-      accentGradient: "from-cyan-500 via-accent to-teal-500",
+      accentGradient: "from-primary via-emerald-500 to-teal-500",
       screenshots: [
         {
           src: "https://assets.mariomon.dev/insverify-1.jpg",
@@ -192,7 +192,7 @@ export function ProjectsSection() {
             <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
               Featured Projects
             </h2>
-            <div className="h-1 w-12 bg-accent rounded" />
+            <div className="h-1 w-12 bg-primary rounded" />
           </div>
 
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -201,7 +201,7 @@ export function ProjectsSection() {
               return (
                 <Card
                   key={index}
-                  className="group relative flex flex-col overflow-hidden border-border/30 bg-card/50 backdrop-blur-sm transition-all duration-500 hover:border-accent/40 hover:shadow-[0_0_40px_-12px] hover:shadow-accent/20"
+                  className="group relative flex flex-col overflow-hidden border-border/30 bg-card/50 backdrop-blur-sm transition-all duration-500 hover:border-primary/40 hover:shadow-[0_0_40px_-12px] hover:shadow-primary/20"
                   style={{
                     animationDelay: `${index * 100}ms`,
                   }}
@@ -244,7 +244,7 @@ export function ProjectsSection() {
                     {/* Header with icon */}
                     <div className="flex items-start gap-4 mb-4">
                       <div
-                        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-linear-to-br ${project.accentGradient} shadow-lg shadow-accent/20 group-hover:shadow-accent/30 transition-shadow`}
+                        className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-linear-to-br ${project.accentGradient} shadow-lg shadow-primary/20 group-hover:shadow-primary/30 transition-shadow`}
                       >
                         <Icon
                           className="h-5 w-5 text-white"
@@ -278,7 +278,7 @@ export function ProjectsSection() {
                       {project.tech.map((tech) => (
                         <span
                           key={tech}
-                          className="inline-flex items-center rounded-md bg-accent/8 dark:bg-accent/12 px-2.5 py-1 text-xs font-medium text-accent ring-1 ring-inset ring-accent/20 transition-colors group-hover:bg-accent/12 dark:group-hover:bg-accent/18"
+                          className="inline-flex items-center rounded-md bg-primary/8 dark:bg-primary/12 px-2.5 py-1 text-xs font-medium text-primary ring-1 ring-inset ring-primary/20 transition-colors group-hover:bg-primary/12 dark:group-hover:bg-primary/18"
                         >
                           {tech}
                         </span>
@@ -297,7 +297,7 @@ export function ProjectsSection() {
             <h3 className="text-xl font-bold text-foreground sm:text-2xl">
               Project Showcases
             </h3>
-            <div className="h-1 w-12 bg-accent/50 rounded" />
+            <div className="h-1 w-12 bg-primary/50 rounded" />
           </div>
 
           <div className="grid gap-4 sm:grid-cols-2">
@@ -311,8 +311,8 @@ export function ProjectsSection() {
                   key={project.id}
                   className={`group relative overflow-hidden border-border/30 bg-card/50 backdrop-blur-sm transition-all duration-500 ${
                     isExpanded
-                      ? "sm:col-span-2 border-accent/40 shadow-[0_0_60px_-12px] shadow-accent/25"
-                      : "hover:border-accent/40 hover:shadow-[0_0_40px_-12px] hover:shadow-accent/20"
+                      ? "sm:col-span-2 border-primary/40 shadow-[0_0_60px_-12px] shadow-primary/25"
+                      : "hover:border-primary/40 hover:shadow-[0_0_40px_-12px] hover:shadow-primary/20"
                   }`}
                 >
                   {/* Gradient accent bar */}
@@ -375,7 +375,7 @@ export function ProjectsSection() {
                       {/* Watch Demo button */}
                       <div className="absolute inset-0 flex items-center justify-center">
                         <div className="flex items-center gap-3 bg-black/80 backdrop-blur-sm px-6 py-3 rounded-full shadow-2xl group-hover/preview:scale-105 group-hover/preview:bg-black/90 transition-all duration-300 ring-1 ring-white/10">
-                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent">
+                          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary">
                             <PlayIcon
                               className="h-4 w-4 text-white ml-0.5"
                               fill="white"
@@ -396,7 +396,7 @@ export function ProjectsSection() {
                       <div
                         className={`flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-linear-to-br ${
                           project.accentGradient
-                        } shadow-lg shadow-accent/20 group-hover:shadow-accent/30 transition-all duration-300 ${
+                        } shadow-lg shadow-primary/20 group-hover:shadow-primary/30 transition-all duration-300 ${
                           isExpanded ? "scale-110" : ""
                         }`}
                       >
@@ -409,7 +409,7 @@ export function ProjectsSection() {
                       {/* Title and Tagline - Clickable */}
                       <button
                         onClick={() => handleCardClick(project.id)}
-                        className="flex-1 min-w-0 text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset rounded"
+                        className="flex-1 min-w-0 text-left cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset rounded"
                       >
                         <h4 className="font-semibold text-foreground text-lg leading-tight tracking-tight">
                           {project.title}
@@ -425,7 +425,7 @@ export function ProjectsSection() {
                           asChild
                           size="sm"
                           onClick={(e) => e.stopPropagation()}
-                          className="shrink-0 bg-accent text-white hover:bg-accent/90 border-accent shadow-sm shadow-accent/20"
+                          className="shrink-0 bg-primary text-primary-foreground hover:bg-primary/90 border-primary shadow-sm shadow-primary/20"
                         >
                           <a
                             href={project.liveUrl}
@@ -442,13 +442,13 @@ export function ProjectsSection() {
                       {/* Expand/Collapse indicator */}
                       <button
                         onClick={() => handleCardClick(project.id)}
-                        className={`flex h-8 w-8 items-center justify-center rounded-full bg-accent/10 transition-all duration-300 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-inset ${
+                        className={`flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 transition-all duration-300 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset ${
                           isExpanded
-                            ? "rotate-180 bg-accent/20"
-                            : "group-hover:bg-accent/15"
+                            ? "rotate-180 bg-primary/20"
+                            : "group-hover:bg-primary/15"
                         }`}
                       >
-                        <ChevronDownIcon className="h-4 w-4 text-accent" />
+                        <ChevronDownIcon className="h-4 w-4 text-primary" />
                       </button>
                     </div>
 
@@ -463,7 +463,7 @@ export function ProjectsSection() {
                       {project.tech.slice(0, 4).map((tech) => (
                         <span
                           key={tech}
-                          className="inline-flex items-center rounded-md bg-accent/8 dark:bg-accent/12 px-2 py-0.5 text-xs font-medium text-accent ring-1 ring-inset ring-accent/20"
+                          className="inline-flex items-center rounded-md bg-primary/8 dark:bg-primary/12 px-2 py-0.5 text-xs font-medium text-primary ring-1 ring-inset ring-primary/20"
                         >
                           {tech}
                         </span>
@@ -511,7 +511,7 @@ export function ProjectsSection() {
                               />
                               <div className="absolute inset-0 bg-black/30 group-hover/play:bg-black/40 transition-colors" />
                               <div className="relative z-10 flex items-center gap-2 bg-white/90 dark:bg-black/90 px-6 py-3 rounded-full shadow-lg group-hover/play:scale-105 transition-transform">
-                                <PlayIcon className="h-6 w-6 text-accent" />
+                                <PlayIcon className="h-6 w-6 text-primary" />
                                 <span className="font-medium text-foreground">
                                   Watch Demo
                                 </span>
@@ -549,7 +549,7 @@ export function ProjectsSection() {
                                     index,
                                   });
                                 }}
-                                className="relative aspect-video rounded-lg overflow-hidden border border-border/50 hover:border-accent/50 transition-all group/thumb cursor-pointer hover:shadow-lg hover:shadow-accent/10"
+                                className="relative aspect-video rounded-lg overflow-hidden border border-border/50 hover:border-primary/50 transition-all group/thumb cursor-pointer hover:shadow-lg hover:shadow-primary/10"
                               >
                                 <Image
                                   src={screenshot.src}
@@ -593,7 +593,7 @@ export function ProjectsSection() {
                         {project.tech.map((tech) => (
                           <span
                             key={tech}
-                            className="inline-flex items-center rounded-md bg-accent/8 dark:bg-accent/12 px-3 py-1 text-sm font-medium text-accent ring-1 ring-inset ring-accent/20"
+                            className="inline-flex items-center rounded-md bg-primary/8 dark:bg-primary/12 px-3 py-1 text-sm font-medium text-primary ring-1 ring-inset ring-primary/20"
                           >
                             {tech}
                           </span>

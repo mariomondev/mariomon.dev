@@ -6,7 +6,7 @@ export function AboutSection() {
           <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
             About
           </h2>
-          <div className="h-1 w-12 bg-accent rounded" />
+          <div className="h-1 w-12 bg-primary rounded" />
         </div>
 
         <div className="space-y-4 max-w-3xl">
