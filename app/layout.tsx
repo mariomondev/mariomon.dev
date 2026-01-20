@@ -181,6 +181,15 @@ export default function RootLayout({
       data-darkreader-scheme="dark"
     >
       <head>
+        {/* Critical: Prevent theme flash with inline styles that match dark mode */}
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+              html.dark { background-color: #1a1a1d; color: #fafafa; }
+              html:not(.dark) { background-color: #fff; color: #1a1a1d; }
+            `,
+          }}
+        />
         {/* Prevent theme flash - runs before paint */}
         <script
           dangerouslySetInnerHTML={{
