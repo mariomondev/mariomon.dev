@@ -7,16 +7,15 @@ export function ContactSection() {
       <div className="space-y-8">
         <div className="space-y-2">
           <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
-            Get In Touch
+            Let&apos;s Connect
           </h2>
           <div className="h-1 w-12 bg-primary rounded" />
         </div>
 
         <p className="max-w-2xl text-base text-muted-foreground leading-relaxed sm:text-lg">
-          Open to senior full-stack engineering opportunities. While I
-          specialize in healthcare systems, I&apos;m interested in challenging
-          engineering roles across industries. Let&apos;s connect to discuss
-          potential collaborations.
+          Open to senior full-stack roles. Healthcare is where most of my
+          experience is, but I&apos;m flexible on industry. If you have something
+          that might be a match, I&apos;d love to hear from you.
         </p>
 
         <div className="flex flex-wrap gap-3 sm:gap-4">
