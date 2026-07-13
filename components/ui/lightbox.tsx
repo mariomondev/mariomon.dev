@@ -1,8 +1,9 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { XIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon, XIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface LightboxProps {
@@ -19,206 +20,141 @@ export function Lightbox({
   onNavigate,
 }: LightboxProps) {
   const isOpen = selectedIndex !== null;
+  const currentImage = selectedIndex !== null ? images[selectedIndex] : null;
 
-  // Keyboard navigation
   React.useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen || selectedIndex === null) return;
 
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft") {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "ArrowLeft") {
         onNavigate(selectedIndex === 0 ? images.length - 1 : selectedIndex - 1);
-      } else if (e.key === "ArrowRight") {
+      }
+
+      if (event.key === "ArrowRight") {
         onNavigate(selectedIndex === images.length - 1 ? 0 : selectedIndex + 1);
-      } else if (e.key === "Escape") {
-        onClose();
       }
     };
 
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, selectedIndex, images.length, onNavigate, onClose]);
-
-  const currentImage = selectedIndex !== null ? images[selectedIndex] : null;
+  }, [images.length, isOpen, onNavigate, selectedIndex]);
 
   return (
-    <DialogPrimitive.Root open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <DialogPrimitive.Root
+      open={isOpen}
+      onOpenChange={(open) => !open && onClose()}
+    >
       <DialogPrimitive.Portal>
-        {/* Backdrop with blur */}
-        <DialogPrimitive.Overlay
-          className={cn(
-            "fixed inset-0 z-50",
-            "bg-black/90 backdrop-blur-xl",
-            "data-[state=open]:animate-in data-[state=closed]:animate-out",
-            "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-            "duration-300"
-          )}
-        />
+        <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/95 data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0" />
 
-        <DialogPrimitive.Content
-          className={cn(
-            "fixed inset-0 z-50",
-            "flex flex-col items-center justify-center",
-            "data-[state=open]:animate-in data-[state=closed]:animate-out",
-            "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-            "duration-300 outline-none"
-          )}
-        >
+        <DialogPrimitive.Content className="fixed inset-0 z-50 flex flex-col bg-black text-white outline-none data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:animate-in data-[state=open]:fade-in-0">
           <DialogPrimitive.Title className="sr-only">
-            {currentImage?.alt || "Image viewer"}
+            {currentImage?.alt ?? "Project screenshot viewer"}
           </DialogPrimitive.Title>
           <DialogPrimitive.Description className="sr-only">
             Viewing image {(selectedIndex ?? 0) + 1} of {images.length}
           </DialogPrimitive.Description>
 
-          {/* Close button - top right, refined */}
-          <button
-            onClick={onClose}
-            className={cn(
-              "absolute top-6 right-6 z-10",
-              "p-3 rounded-full",
-              "bg-white/10 hover:bg-white/20",
-              "backdrop-blur-sm",
-              "border border-white/10 hover:border-white/20",
-              "text-white/70 hover:text-white",
-              "transition-all duration-200",
-              "group"
-            )}
-            aria-label="Close"
-          >
-            <XIcon className="w-5 h-5 transition-transform group-hover:rotate-90 duration-200" />
-          </button>
-
-          {/* Counter - top left */}
-          <div
-            className={cn(
-              "absolute top-6 left-6 z-10",
-              "px-4 py-2 rounded-full",
-              "bg-white/10 backdrop-blur-sm",
-              "border border-white/10",
-              "text-white/70 text-sm font-medium tracking-wide"
-            )}
-          >
-            <span className="text-white">{(selectedIndex ?? 0) + 1}</span>
-            <span className="mx-1.5 text-white/40">/</span>
-            <span>{images.length}</span>
+          <div className="flex h-16 shrink-0 items-center justify-between border-b border-white/15 px-5 sm:h-20 sm:px-8">
+            <div className="text-sm text-white/65">
+              <span className="font-semibold text-white">
+                {(selectedIndex ?? 0) + 1}
+              </span>
+              <span className="mx-2">of</span>
+              <span>{images.length}</span>
+            </div>
+            <button
+              type="button"
+              onClick={onClose}
+              className="inline-flex size-11 items-center justify-center rounded-md text-white/70 transition-colors hover:bg-white/10 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+              aria-label="Close image viewer"
+            >
+              <XIcon className="size-5" />
+            </button>
           </div>
 
-          {/* Main image container */}
-          <div className="relative w-full h-full flex items-center justify-center px-4 py-24 sm:px-16 sm:py-28">
-            {/* Navigation - Previous */}
+          <div className="relative flex min-h-0 flex-1 items-center justify-center px-16 py-3 sm:px-24 sm:py-6">
             <button
+              type="button"
               onClick={() =>
                 onNavigate(
-                  selectedIndex === 0 ? images.length - 1 : (selectedIndex ?? 0) - 1
+                  selectedIndex === 0
+                    ? images.length - 1
+                    : (selectedIndex ?? 0) - 1,
                 )
               }
-              className={cn(
-                "absolute left-4 sm:left-8 z-10",
-                "p-3 sm:p-4 rounded-full",
-                "bg-white/5 hover:bg-white/15",
-                "backdrop-blur-sm",
-                "border border-white/10 hover:border-white/20",
-                "text-white/50 hover:text-white",
-                "transition-all duration-200",
-                "hover:scale-110 active:scale-95"
-              )}
+              disabled={images.length < 2}
+              className="absolute left-3 inline-flex size-11 items-center justify-center rounded-md border border-white/15 bg-black text-white/70 transition-colors hover:border-white/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-30 sm:left-8"
               aria-label="Previous image"
             >
-              <ChevronLeftIcon className="w-6 h-6 sm:w-7 sm:h-7" />
+              <ChevronLeftIcon className="size-6" />
             </button>
 
-            {/* Image with elegant frame */}
             {currentImage && (
-              <div
-                className={cn(
-                  "relative max-w-full max-h-full",
-                  "animate-in fade-in-0 zoom-in-95 duration-300"
-                )}
-                key={selectedIndex}
+              <figure
+                className="mx-auto flex h-full min-h-0 w-full max-w-7xl flex-col"
+                key={currentImage.src}
               >
-                <div
-                  className={cn(
-                    "relative rounded-lg overflow-hidden",
-                    "shadow-2xl shadow-black/50",
-                    "ring-1 ring-white/10"
-                  )}
-                >
-                  <img
+                <div className="relative min-h-0 w-full flex-1 overflow-hidden rounded-lg border border-white/15 bg-black">
+                  <Image
                     src={currentImage.src}
                     alt={currentImage.alt}
-                    className="max-h-[70vh] w-auto object-contain"
+                    fill
+                    sizes="95vw"
+                    className="object-contain"
                   />
                 </div>
-
-                {/* Caption */}
-                <div className="mt-6 text-center">
-                  <p className="text-white/90 text-base sm:text-lg font-light tracking-wide">
-                    {currentImage.alt}
-                  </p>
-                </div>
-              </div>
+                <figcaption className="mx-auto mt-3 max-w-3xl shrink-0 text-center text-sm leading-5 text-white/70 sm:mt-5 sm:text-base sm:leading-6">
+                  {currentImage.alt}
+                </figcaption>
+              </figure>
             )}
 
-            {/* Navigation - Next */}
             <button
+              type="button"
               onClick={() =>
                 onNavigate(
-                  selectedIndex === images.length - 1 ? 0 : (selectedIndex ?? 0) + 1
+                  selectedIndex === images.length - 1
+                    ? 0
+                    : (selectedIndex ?? 0) + 1,
                 )
               }
-              className={cn(
-                "absolute right-4 sm:right-8 z-10",
-                "p-3 sm:p-4 rounded-full",
-                "bg-white/5 hover:bg-white/15",
-                "backdrop-blur-sm",
-                "border border-white/10 hover:border-white/20",
-                "text-white/50 hover:text-white",
-                "transition-all duration-200",
-                "hover:scale-110 active:scale-95"
-              )}
+              disabled={images.length < 2}
+              className="absolute right-3 inline-flex size-11 items-center justify-center rounded-md border border-white/15 bg-black text-white/70 transition-colors hover:border-white/30 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary disabled:opacity-30 sm:right-8"
               aria-label="Next image"
             >
-              <ChevronRightIcon className="w-6 h-6 sm:w-7 sm:h-7" />
+              <ChevronRightIcon className="size-6" />
             </button>
           </div>
 
-          {/* Thumbnail strip */}
-          <div
-            className={cn(
-              "absolute bottom-0 left-0 right-0",
-              "py-4 px-4",
-              "bg-gradient-to-t from-black/80 via-black/40 to-transparent"
-            )}
-          >
+          <div className="shrink-0 border-t border-white/15 px-4 py-3 sm:px-8 sm:py-4">
             <div className="flex items-center justify-center gap-2 sm:gap-3">
-              {images.map((image, idx) => (
+              {images.map((image, index) => (
                 <button
-                  key={idx}
-                  onClick={() => onNavigate(idx)}
+                  key={image.src}
+                  type="button"
+                  onClick={() => onNavigate(index)}
                   className={cn(
-                    "relative rounded-md overflow-hidden",
-                    "transition-all duration-200",
-                    "ring-2 ring-offset-2 ring-offset-black/50",
-                    idx === selectedIndex
-                      ? "ring-white/80 scale-110"
-                      : "ring-transparent hover:ring-white/40 opacity-50 hover:opacity-100"
+                    "relative h-10 w-16 overflow-hidden rounded-md border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary sm:h-12 sm:w-20",
+                    index === selectedIndex
+                      ? "border-primary"
+                      : "border-white/15 opacity-55 hover:border-white/35 hover:opacity-100",
                   )}
+                  aria-label={`View image ${index + 1}: ${image.alt}`}
+                  aria-current={index === selectedIndex ? "true" : undefined}
                 >
-                  <img
+                  <Image
                     src={image.src}
-                    alt={image.alt}
-                    className="w-16 h-10 sm:w-20 sm:h-12 object-cover"
+                    alt=""
+                    fill
+                    sizes="80px"
+                    className="object-cover object-left-top"
                   />
                 </button>
               ))}
             </div>
-
-            {/* Keyboard hint */}
-            <p className="mt-3 text-center text-white/30 text-xs tracking-wider hidden sm:block">
-              Use <kbd className="px-1.5 py-0.5 rounded bg-white/10 text-white/50 font-mono text-[10px]">←</kbd>{" "}
-              <kbd className="px-1.5 py-0.5 rounded bg-white/10 text-white/50 font-mono text-[10px]">→</kbd> to navigate
-              {" "}&bull;{" "}
-              <kbd className="px-1.5 py-0.5 rounded bg-white/10 text-white/50 font-mono text-[10px]">ESC</kbd> to close
+            <p className="mt-3 hidden text-center text-sm text-white/50 sm:block">
+              Arrow keys navigate. Escape closes the viewer.
             </p>
           </div>
         </DialogPrimitive.Content>

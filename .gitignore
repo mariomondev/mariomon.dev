@@ -40,3 +40,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+.playwright-cli/
+
+# local agent and planning files
+/.codex/
+/.impeccable/
+/docs/plans/

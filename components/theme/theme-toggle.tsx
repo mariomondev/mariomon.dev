@@ -6,26 +6,25 @@ import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
 
-export function ThemeToggle() {
-  const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = React.useState(false);
+const subscribe = () => () => {};
+const getClientSnapshot = () => true;
+const getServerSnapshot = () => false;
 
-  React.useEffect(() => {
-    setMounted(true);
-  }, []);
+export function ThemeToggle() {
+  const { resolvedTheme, setTheme } = useTheme();
+  const mounted = React.useSyncExternalStore(
+    subscribe,
+    getClientSnapshot,
+    getServerSnapshot,
+  );
 
   const toggleTheme = () => {
-    setTheme(theme === "dark" ? "light" : "dark");
+    setTheme(resolvedTheme === "dark" ? "light" : "dark");
   };
 
   // Prevent hydration mismatch by not rendering the theme toggle until mounted
   if (!mounted) {
-    return (
-      <Button variant="outline" size="icon">
-        <div className="size-4" />
-        <span className="sr-only">Loading theme</span>
-      </Button>
-    );
+    return <div className="size-11" aria-hidden="true" />;
   }
 
   return (
@@ -33,14 +32,14 @@ export function ThemeToggle() {
       variant="ghost"
       size="icon"
       onClick={toggleTheme}
-      className="cursor-pointer"
+      className="size-11 cursor-pointer text-muted-foreground hover:text-foreground"
+      aria-label={`Switch to ${resolvedTheme === "dark" ? "light" : "dark"} theme`}
     >
-      {theme === "dark" ? (
+      {resolvedTheme === "dark" ? (
         <Sun className="size-4" />
       ) : (
         <Moon className="size-4" />
       )}
-      <span className="sr-only">Toggle theme</span>
     </Button>
   );
 }

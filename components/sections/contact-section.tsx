@@ -1,55 +1,60 @@
+import { ArrowUpRightIcon, GithubIcon, LinkedinIcon, MailIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { GithubIcon, MailIcon, LinkedinIcon } from "lucide-react";
+
+const profileLinks = [
+  {
+    href: "https://github.com/mariomondev",
+    label: "GitHub",
+    icon: GithubIcon,
+  },
+  {
+    href: "https://linkedin.com/in/mariomondev",
+    label: "LinkedIn",
+    icon: LinkedinIcon,
+  },
+];
 
 export function ContactSection() {
   return (
-    <section className="section-container border-t border-border/50">
-      <div className="space-y-8">
-        <div className="space-y-2">
-          <h2 className="text-2xl font-bold text-foreground sm:text-3xl">
-            Let&apos;s Connect
+    <section id="contact" className="section-container border-t">
+      <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:items-end lg:gap-20">
+        <div>
+          <h2 className="section-heading max-w-3xl">
+            Have a hard system problem?
           </h2>
-          <div className="h-1 w-12 bg-primary rounded" />
+          <p className="body-copy mt-7 max-w-2xl">
+            Send me context if you want to compare notes on product systems,
+            automation, or high-stakes operational workflows.
+          </p>
         </div>
 
-        <p className="max-w-2xl text-base text-muted-foreground leading-relaxed sm:text-lg">
-          Open to senior full-stack roles. Healthcare is where most of my
-          experience is, but I&apos;m flexible on industry. If you have something
-          that might be a match, I&apos;d love to hear from you.
-        </p>
-
-        <div className="flex flex-wrap gap-3 sm:gap-4">
-          <Button asChild variant="default" size="lg">
-            <a
-              href="mailto:mario@mariomon.dev"
-              className="flex items-center gap-2"
-            >
+        <div className="lg:justify-self-end">
+          <Button asChild size="lg" className="h-12 px-6 text-base">
+            <a href="mailto:mario@mariomon.dev">
               <MailIcon className="size-5" />
-              Email
+              Start a conversation
             </a>
           </Button>
-          <Button asChild variant="ghost" size="lg">
-            <a
-              href="https://github.com/mariomondev"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 border"
-            >
-              <GithubIcon className="size-5" />
-              GitHub
-            </a>
-          </Button>
-          <Button asChild variant="ghost" size="lg">
-            <a
-              href="https://linkedin.com/in/mariomondev"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 border"
-            >
-              <LinkedinIcon className="size-5" />
-              LinkedIn
-            </a>
-          </Button>
+
+          <div className="mt-7 flex flex-wrap gap-x-6 gap-y-3">
+            {profileLinks.map((link) => {
+              const Icon = link.icon;
+
+              return (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="focus-ring inline-flex h-11 items-center gap-2 rounded-md font-semibold text-muted-foreground transition-colors hover:text-foreground"
+                >
+                  <Icon className="size-4" />
+                  {link.label}
+                  <ArrowUpRightIcon className="size-4 text-primary" />
+                </a>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

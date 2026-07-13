@@ -1,60 +1,33 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Commissioner } from "next/font/google";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const commissioner = Commissioner({
+  variable: "--font-commissioner",
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  display: "swap",
 });
 
 export const metadata: Metadata = {
   applicationName: "Mario Montano Portfolio",
   title:
-    "Mario Montano | Senior Full-Stack Engineer | TypeScript, React, Next.js",
+    "Mario Montano | Full-Stack Engineer | Automation and Product Systems",
   description:
-    "Senior full-stack engineer with 8+ years of experience building scalable web applications. Specialized expertise in healthcare/EMR systems, HIPAA compliance, and end-to-end product development using TypeScript, React, Next.js, and Node.js.",
+    "Full-stack engineer building product systems and operational automation across global travel and healthcare.",
   keywords: [
-    // My Brand
     "Mario Montano",
-    "Mario Montaño",
-    "Mario Montano Developer",
-    "Mario Montano Portfolio",
-    "mariomon.dev",
-    "mariomondev",
-    "mariomon dev",
-
-    // Core Identity (Long-tail)
-    "Senior Full-Stack Engineer Healthcare",
-    "Healthcare Software Engineer TypeScript",
-    "EMR Developer Full-Stack",
-    "HIPAA Compliant Software Developer",
-
-    // Technical Stack
-    "TypeScript React Next.js Developer",
-    "Node.js PostgreSQL Engineer",
-    "Full-Stack TypeScript Engineer",
-    "iOS Swift Developer",
-
-    // Niche/Specialization
-    "Healthcare EMR Software Engineer",
-    "HIPAA Compliant Web Applications",
-    "Medical Software Full-Stack Developer",
-    "EHR System Developer",
-    "Healthcare Technology Engineer",
-
-    // Experience Level
-    "Senior Engineer 8 Years Experience",
-    "End-to-End Product Development",
-
-    // Remote/Location (update with your actual location)
-    "Remote Full-Stack Developer",
+    "Full-Stack Engineer",
+    "TypeScript",
+    "React",
+    "Next.js",
+    "Node.js",
+    "Operational Automation",
+    "GraphQL",
+    "Hasura",
+    "PostgreSQL",
+    "Healthcare Software",
   ],
   authors: [{ name: "Mario Montano", url: "https://mariomon.dev" }],
   creator: "Mario Montano",
@@ -65,7 +38,7 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       { url: "/icon.svg", type: "image/svg+xml" },
-      { url: "/icon.png", type: "image/png", sizes: "any" },
+      { url: "/icon.png", type: "image/png", sizes: "96x96" },
     ],
     apple: { url: "/apple-icon.png", type: "image/png" },
     other: [
@@ -80,24 +53,15 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://mariomon.dev",
     siteName: "Mario Montano Portfolio",
-    title: "Mario Montano | Senior Full-Stack Engineer",
+    title: "Mario Montano | Full-Stack Engineer",
     description:
-      "Senior full-stack engineer with 8+ years of experience building scalable web applications. Specialized expertise in healthcare/EMR systems, HIPAA compliance, and end-to-end product development using TypeScript, React, Next.js, and Node.js.",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Mario Montano - Senior Full-Stack Engineer",
-      },
-    ],
+      "Full-stack engineer building product systems and operational automation across global travel and healthcare.",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Mario Montano | Senior Full-Stack Engineer",
+    title: "Mario Montano | Full-Stack Engineer",
     description:
-      "Senior full-stack engineer with 8+ years of experience building scalable web applications. Specialized expertise in healthcare/EMR systems, HIPAA compliance, and end-to-end product development using TypeScript, React, Next.js, and Node.js.",
-    images: ["/og-image.png"],
+      "Full-stack engineer building product systems and operational automation across global travel and healthcare.",
     creator: "@mariomondev",
   },
   robots: {
@@ -122,9 +86,9 @@ export default function RootLayout({
     "@context": "https://schema.org",
     "@type": "Person",
     name: "Mario Montano",
-    jobTitle: "Senior Full-Stack Engineer",
+    jobTitle: "Full-Stack Developer, Automations",
     description:
-      "Senior full-stack engineer with 8+ years of experience building scalable web applications, with specialized expertise in healthcare/EMR systems and HIPAA compliance.",
+      "Full-stack engineer building product systems and operational automation across global travel and healthcare.",
     url: "https://mariomon.dev",
     sameAs: [
       "https://github.com/mariomondev",
@@ -137,6 +101,14 @@ export default function RootLayout({
       "Next.js",
       "Node.js",
       "PostgreSQL",
+      "GraphQL",
+      "Hasura",
+      "Hono",
+      "Trigger.dev",
+      "ClickUp API",
+      "Google Cloud",
+      "Docker",
+      "GitLab CI/CD",
       "Web Application Development",
       "Healthcare Software Development",
       "EMR/EHR Systems",
@@ -144,17 +116,17 @@ export default function RootLayout({
       "Swift",
       "iOS Development",
       "API Development",
-      "Automation",
+      "Operational Automation",
     ],
+    worksFor: {
+      "@type": "Organization",
+      name: "Ventura Travel",
+    },
     hasOccupation: {
       "@type": "Occupation",
-      name: "Senior Full-Stack Engineer",
-      occupationLocation: {
-        "@type": "Country",
-        name: "United States",
-      },
+      name: "Full-Stack Developer, Automations",
       skills:
-        "Full-Stack Development, TypeScript, React, Next.js, Node.js, PostgreSQL, Healthcare Systems, EMR/EHR, HIPAA Compliance",
+        "Full-Stack Development, TypeScript, Node.js, GraphQL, PostgreSQL, Cloud Infrastructure, Docker, CI/CD, Operational Automation",
     },
   };
 
@@ -163,7 +135,7 @@ export default function RootLayout({
     "@type": "WebSite",
     name: "Mario Montano Portfolio",
     description:
-      "Portfolio of Mario Montano, a senior full-stack engineer with specialized expertise in building scalable web applications and healthcare systems.",
+      "Experience and selected systems by Mario Montano, a full-stack engineer working across operational automation and healthcare products.",
     url: "https://mariomon.dev",
     author: {
       "@type": "Person",
@@ -173,11 +145,8 @@ export default function RootLayout({
   };
 
   return (
-    <html lang="en" data-darkreader-mode="dynamic"                                                                                                                                         
-    data-darkreader-scheme="dark" 
-    suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning>
       <head>
-        <meta name="darkreader-lock" />
         <link rel="preconnect" href="https://assets.mariomon.dev" />
         <link rel="dns-prefetch" href="https://assets.mariomon.dev" />
         <script
@@ -189,9 +158,7 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
         />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${commissioner.variable} antialiased`}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
@@ -200,7 +167,7 @@ export default function RootLayout({
         >
           {children}
         </ThemeProvider>
-        <Analytics />
+        {process.env.VERCEL === "1" ? <Analytics /> : null}
       </body>
     </html>
   );

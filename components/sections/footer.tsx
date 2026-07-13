@@ -2,9 +2,10 @@ export function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border/50 bg-card/50 py-8">
-      <div className="mx-auto max-w-4xl px-4 sm:px-6 text-center text-sm text-muted-foreground">
-        <p>© {currentYear} Mario Montano (mariomon.dev). All rights reserved.</p>
+    <footer className="border-t py-8">
+      <div className="site-container flex flex-col gap-2 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+        <p>(c) {currentYear} Mario Montano</p>
+        <p>Built with Next.js.</p>
       </div>
     </footer>
   );
