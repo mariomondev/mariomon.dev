@@ -1,504 +1,725 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   CircleCheckIcon,
   ClockIcon,
   ListTodoIcon,
   MailIcon,
+  PauseIcon,
   PlayIcon,
-  RotateCcwIcon,
   UsersIcon,
   WebhookIcon,
   WorkflowIcon,
   type LucideIcon,
 } from "lucide-react";
-import { motion, MotionConfig, useReducedMotion } from "motion/react";
-import { Button } from "@/components/ui/button";
+import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
+import { usePrefersReducedMotion } from "@/lib/use-prefers-reduced-motion";
 
-type RelayState = "idle" | "active" | "complete";
+type TraceTone =
+  | "trigger"
+  | "core"
+  | "blue"
+  | "amber"
+  | "teal"
+  | "violet"
+  | "outcome";
 
-type RelayNode = {
-  step: number;
-  index: string;
-  title: string;
-  detail: string;
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  icon: LucideIcon;
-  branch?: boolean;
+type TraceStatus = "queued" | "running" | "waiting" | "done";
+
+type TraceSegment = {
+  start: number;
+  end: number;
+  startPhase: number;
+  endPhase: number;
+  kind?: "work" | "wait";
 };
 
-const relayNodes: RelayNode[] = [
+type TraceLane = {
+  id: string;
+  label: string;
+  detail: string;
+  icon: LucideIcon;
+  tone: TraceTone;
+  startPhase: number;
+  donePhase: number;
+  waitingFrom?: number;
+  waitingUntil?: number;
+  segments: TraceSegment[];
+};
+
+const traceLanes: TraceLane[] = [
   {
-    step: 1,
-    index: "01",
-    title: "Business event",
+    id: "event",
+    label: "Business event",
     detail: "signal received",
-    x: 32,
-    y: 217,
-    width: 178,
-    height: 86,
     icon: WebhookIcon,
+    tone: "trigger",
+    startPhase: 0,
+    donePhase: 1,
+    segments: [{ start: 2, end: 14, startPhase: 0, endPhase: 1 }],
   },
   {
-    step: 2,
-    index: "02",
-    title: "Automation layer",
-    detail: "context resolved",
-    x: 305,
-    y: 207,
-    width: 205,
-    height: 106,
+    id: "context",
+    label: "Context resolution",
+    detail: "related records joined",
     icon: WorkflowIcon,
+    tone: "core",
+    startPhase: 1,
+    donePhase: 2,
+    segments: [{ start: 14, end: 34, startPhase: 1, endPhase: 2 }],
   },
   {
-    step: 3,
-    index: "03",
-    title: "Required email",
+    id: "email",
+    label: "Required email",
     detail: "prepared and sent",
-    x: 620,
-    y: 20,
-    width: 200,
-    height: 84,
     icon: MailIcon,
-    branch: true,
+    tone: "blue",
+    startPhase: 2,
+    donePhase: 3,
+    segments: [{ start: 34, end: 49, startPhase: 2, endPhase: 3 }],
   },
   {
-    step: 4,
-    index: "04",
-    title: "Operational task",
+    id: "task",
+    label: "Operational task",
     detail: "created with context",
-    x: 620,
-    y: 142,
-    width: 200,
-    height: 84,
     icon: ListTodoIcon,
-    branch: true,
+    tone: "amber",
+    startPhase: 2,
+    donePhase: 4,
+    segments: [{ start: 34, end: 60, startPhase: 2, endPhase: 4 }],
   },
   {
-    step: 5,
-    index: "05",
-    title: "Provider follow-up",
-    detail: "coordination continues",
-    x: 620,
-    y: 294,
-    width: 200,
-    height: 84,
+    id: "followup",
+    label: "Provider follow-up",
+    detail: "waits, then resumes",
     icon: ClockIcon,
-    branch: true,
+    tone: "teal",
+    startPhase: 2,
+    donePhase: 7,
+    waitingFrom: 4,
+    waitingUntil: 6,
+    segments: [
+      { start: 34, end: 54, startPhase: 2, endPhase: 4 },
+      {
+        start: 54,
+        end: 70,
+        startPhase: 4,
+        endPhase: 6,
+        kind: "wait",
+      },
+      { start: 70, end: 82, startPhase: 6, endPhase: 7 },
+    ],
   },
   {
-    step: 6,
-    index: "06",
-    title: "Internal handoff",
+    id: "handoff",
+    label: "Internal handoff",
     detail: "owner informed",
-    x: 620,
-    y: 416,
-    width: 200,
-    height: 84,
     icon: UsersIcon,
-    branch: true,
+    tone: "violet",
+    startPhase: 2,
+    donePhase: 5,
+    segments: [{ start: 34, end: 70, startPhase: 2, endPhase: 5 }],
   },
   {
-    step: 7,
-    index: "07",
-    title: "Clear next action",
-    detail: "ready for judgment",
-    x: 904,
-    y: 207,
-    width: 184,
-    height: 106,
+    id: "outcome",
+    label: "Human-ready outcome",
+    detail: "clear next action",
     icon: CircleCheckIcon,
+    tone: "outcome",
+    startPhase: 8,
+    donePhase: 10,
+    segments: [{ start: 82, end: 98, startPhase: 8, endPhase: 10 }],
   },
 ];
 
-const routes = [
+const toneStyles: Record<
+  TraceTone,
   {
-    step: 2,
-    path: "M210 260 C248 260 267 260 305 260",
+    icon: string;
+    bar: string;
+    text: string;
+    dot: string;
+    glow: string;
+    border: string;
+  }
+> = {
+  trigger: {
+    icon: "border-orange-500/55 bg-orange-500/10 text-orange-500",
+    bar: "bg-orange-500",
+    text: "text-orange-500",
+    dot: "bg-orange-500",
+    glow: "shadow-[0_0_18px_color-mix(in_oklab,var(--color-orange-500)_35%,transparent)]",
+    border: "border-orange-500/55",
   },
-  {
-    step: 3,
-    path: "M510 247 C562 247 558 62 620 62",
+  core: {
+    icon: "border-primary/55 bg-primary/10 text-primary",
+    bar: "bg-primary",
+    text: "text-primary",
+    dot: "bg-primary",
+    glow: "shadow-[0_0_18px_color-mix(in_oklab,var(--primary)_35%,transparent)]",
+    border: "border-primary/55",
   },
-  {
-    step: 4,
-    path: "M510 254 C565 254 565 184 620 184",
+  blue: {
+    icon: "border-chart-2/55 bg-chart-2/10 text-chart-2",
+    bar: "bg-chart-2",
+    text: "text-chart-2",
+    dot: "bg-chart-2",
+    glow: "shadow-[0_0_18px_color-mix(in_oklab,var(--chart-2)_35%,transparent)]",
+    border: "border-chart-2/55",
   },
-  {
-    step: 5,
-    path: "M510 266 C565 266 565 336 620 336",
+  amber: {
+    icon: "border-chart-4/55 bg-chart-4/10 text-chart-4",
+    bar: "bg-chart-4",
+    text: "text-chart-4",
+    dot: "bg-chart-4",
+    glow: "shadow-[0_0_18px_color-mix(in_oklab,var(--chart-4)_35%,transparent)]",
+    border: "border-chart-4/55",
   },
-  {
-    step: 6,
-    path: "M510 273 C562 273 558 458 620 458",
+  teal: {
+    icon: "border-chart-3/55 bg-chart-3/10 text-chart-3",
+    bar: "bg-chart-3",
+    text: "text-chart-3",
+    dot: "bg-chart-3",
+    glow: "shadow-[0_0_18px_color-mix(in_oklab,var(--chart-3)_35%,transparent)]",
+    border: "border-chart-3/55",
   },
-  {
-    step: 7,
-    path: "M510 260 C650 260 765 260 904 260",
+  violet: {
+    icon: "border-chart-5/55 bg-chart-5/10 text-chart-5",
+    bar: "bg-chart-5",
+    text: "text-chart-5",
+    dot: "bg-chart-5",
+    glow: "shadow-[0_0_18px_color-mix(in_oklab,var(--chart-5)_35%,transparent)]",
+    border: "border-chart-5/55",
   },
-];
+  outcome: {
+    icon: "border-emerald-500/55 bg-emerald-500/10 text-emerald-500",
+    bar: "bg-emerald-500",
+    text: "text-emerald-500",
+    dot: "bg-emerald-500",
+    glow: "shadow-[0_0_18px_color-mix(in_oklab,var(--color-emerald-500)_35%,transparent)]",
+    border: "border-emerald-500/55",
+  },
+};
 
 const statusMessages = [
-  "Ready for a business event.",
   "Business event received.",
-  "Context resolved by the automation layer.",
-  "Required message prepared.",
-  "Operational task created with context.",
-  "Provider follow-up scheduled.",
+  "Resolving related context.",
+  "Four actions started in parallel.",
+  "Required email sent.",
+  "Task created. Provider follow-up waiting.",
   "Internal handoff prepared.",
-  "A clear next action is ready.",
-  "Workflow complete. Clear next action delivered.",
+  "Provider follow-up resumed.",
+  "Parallel work completed.",
+  "Completed actions converging.",
+  "Preparing the human-ready outcome.",
+  "Clear next action ready.",
 ];
 
-function getRelayState(phase: number, step: number): RelayState {
-  if (phase < step) return "idle";
-  if (phase === step) return "active";
-  return "complete";
+const cursorPositions = [2, 14, 34, 49, 60, 70, 76, 82, 86, 93, 98];
+const elapsedTimes = [
+  "00:00.2",
+  "00:01.1",
+  "00:02.7",
+  "00:03.9",
+  "00:04.8",
+  "00:05.6",
+  "00:06.1",
+  "00:06.6",
+  "00:06.9",
+  "00:07.4",
+  "00:07.8",
+];
+const phaseDelay = 720;
+const completedHold = 2200;
+const finalPhase = 10;
+
+export function AutomationRelay() {
+  const figureRef = useRef<HTMLElement | null>(null);
+  const [phase, setPhase] = useState(0);
+  const [isInView, setIsInView] = useState(false);
+  const [isPageVisible, setIsPageVisible] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
+  const reduceMotion = usePrefersReducedMotion();
+  const displayPhase = reduceMotion ? finalPhase : phase;
+  const shouldRun = isInView && isPageVisible && !isPaused && !reduceMotion;
+
+  useEffect(() => {
+    const figure = figureRef.current;
+    if (!figure) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => setIsInView(entry.isIntersecting),
+      { threshold: 0.25 },
+    );
+
+    observer.observe(figure);
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const updateVisibility = () => {
+      setIsPageVisible(document.visibilityState === "visible");
+    };
+
+    updateVisibility();
+    document.addEventListener("visibilitychange", updateVisibility);
+    return () =>
+      document.removeEventListener("visibilitychange", updateVisibility);
+  }, []);
+
+  useEffect(() => {
+    if (!shouldRun) return;
+
+    const timer = window.setTimeout(
+      () => {
+        setPhase((currentPhase) =>
+          currentPhase < finalPhase ? currentPhase + 1 : 0,
+        );
+      },
+      phase === finalPhase ? completedHold : phaseDelay,
+    );
+
+    return () => window.clearTimeout(timer);
+  }, [phase, shouldRun]);
+
+  return (
+    <figure ref={figureRef} className="mt-10 sm:mt-14">
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <div className="flex flex-wrap items-center gap-2 font-mono text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+            <span
+              className={cn(
+                "size-2 rounded-full bg-emerald-500",
+                shouldRun && "animate-pulse",
+              )}
+            />
+            <span>{reduceMotion ? "Completed trace" : "Live execution"}</span>
+            <span aria-hidden="true">/</span>
+            <span>{elapsedTimes[displayPhase]}</span>
+          </div>
+          <p className="mt-2 text-xl font-semibold tracking-[-0.02em] text-foreground">
+            Event coordination
+          </p>
+          <p className="mt-1 text-sm leading-6 text-muted-foreground">
+            {statusMessages[displayPhase]}
+          </p>
+        </div>
+
+        {reduceMotion ? (
+          <span className="shrink-0 pt-1 text-sm text-muted-foreground">
+            Motion reduced
+          </span>
+        ) : (
+          <button
+            type="button"
+            className="focus-ring inline-flex h-10 shrink-0 items-center gap-2 rounded-md border bg-background/80 px-3.5 text-sm font-semibold text-foreground transition-colors hover:bg-muted"
+            onClick={() => setIsPaused((paused) => !paused)}
+            aria-pressed={isPaused}
+            aria-label={
+              isPaused ? "Resume execution trace" : "Pause execution trace"
+            }
+          >
+            {isPaused ? (
+              <PlayIcon className="size-4" />
+            ) : (
+              <PauseIcon className="size-4" />
+            )}
+            {isPaused ? "Resume" : "Pause"}
+          </button>
+        )}
+      </div>
+
+      <div aria-hidden="true">
+        <DesktopTrace phase={displayPhase} reduceMotion={reduceMotion} />
+        <MobileTrace phase={displayPhase} reduceMotion={reduceMotion} />
+      </div>
+
+      <ol className="sr-only">
+        {traceLanes.map((lane, index) => (
+          <li key={lane.id}>
+            {index + 1}. {lane.label}: {lane.detail}
+          </li>
+        ))}
+      </ol>
+      <p className="sr-only">
+        The email, task, follow-up, and handoff run in parallel before the
+        workflow produces a clear next action.
+      </p>
+    </figure>
+  );
 }
 
-function RelayRoute({
-  path,
-  state,
+function DesktopTrace({
+  phase,
   reduceMotion,
 }: {
-  path: string;
-  state: RelayState;
+  phase: number;
+  reduceMotion: boolean;
+}) {
+  const cursorPosition = cursorPositions[phase];
+
+  return (
+    <div className="mt-9 hidden border-y md:block">
+      <div className="grid h-12 grid-cols-[15rem_minmax(0,1fr)_6.5rem] items-center border-b font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+        <span className="px-4">Execution lane</span>
+        <div className="flex justify-between px-1">
+          <span>00:00</span>
+          <span>00:02</span>
+          <span>00:04</span>
+          <span>00:06</span>
+          <span>00:08</span>
+        </div>
+        <span className="px-3 text-right">State</span>
+      </div>
+
+      <div className="relative overflow-hidden">
+        <div className="pointer-events-none absolute inset-y-0 left-60 right-26">
+          {[0, 25, 50, 75, 100].map((position) => (
+            <span
+              key={position}
+              className="absolute inset-y-0 border-l border-border/45"
+              style={{ left: `${position}%` }}
+            />
+          ))}
+
+          <span className="absolute left-[34%] top-30 h-80 border-l border-dashed border-border" />
+          <span className="absolute left-[82%] top-50 h-80 border-l border-dashed border-border" />
+
+          <motion.span
+            initial={false}
+            animate={{ left: `${cursorPosition}%` }}
+            transition={{
+              duration: reduceMotion ? 0 : 0.62,
+              ease: [0.16, 1, 0.3, 1],
+            }}
+            className="absolute inset-y-0 z-20 w-px bg-primary/70"
+          >
+            <span className="absolute -left-1 top-2 size-2 rounded-full bg-primary shadow-[0_0_14px_color-mix(in_oklab,var(--primary)_65%,transparent)]" />
+          </motion.span>
+        </div>
+
+        {traceLanes.map((lane) => (
+          <DesktopLane
+            key={lane.id}
+            lane={lane}
+            phase={phase}
+            reduceMotion={reduceMotion}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function DesktopLane({
+  lane,
+  phase,
+  reduceMotion,
+}: {
+  lane: TraceLane;
+  phase: number;
+  reduceMotion: boolean;
+}) {
+  const Icon = lane.icon;
+  const styles = toneStyles[lane.tone];
+  const status = getLaneStatus(lane, phase);
+  const isActive = status === "running" || status === "waiting";
+
+  return (
+    <motion.div
+      initial={false}
+      animate={{ opacity: status === "queued" ? 0.46 : 1 }}
+      transition={{ duration: reduceMotion ? 0 : 0.25 }}
+      className={cn(
+        "relative grid h-20 grid-cols-[15rem_minmax(0,1fr)_6.5rem] items-center border-b last:border-b-0",
+        isActive && "bg-muted/20",
+        lane.id === "outcome" && "bg-emerald-500/2.5",
+      )}
+    >
+      <div className="flex min-w-0 items-center gap-3 px-4">
+        <motion.span
+          initial={false}
+          animate={{ scale: isActive ? 1.08 : 1 }}
+          transition={{
+            duration: reduceMotion ? 0 : 0.28,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+          className={cn(
+            "flex size-9 shrink-0 items-center justify-center rounded-full border",
+            styles.icon,
+            isActive && styles.glow,
+          )}
+        >
+          <Icon className="size-4.5" strokeWidth={1.8} />
+        </motion.span>
+        <div className="min-w-0">
+          <p
+            className={cn(
+              "truncate text-sm font-semibold text-foreground",
+              isActive && styles.text,
+            )}
+          >
+            {lane.label}
+          </p>
+          <p className="mt-0.5 truncate text-xs text-muted-foreground">
+            {lane.detail}
+          </p>
+        </div>
+      </div>
+
+      <div className="relative h-full">
+        <span className="absolute inset-x-0 top-1/2 h-px bg-border/70" />
+        {lane.segments.map((segment, index) => (
+          <TraceSpan
+            key={`${lane.id}-${index}`}
+            segment={segment}
+            phase={phase}
+            tone={lane.tone}
+            reduceMotion={reduceMotion}
+          />
+        ))}
+      </div>
+
+      <div className="flex justify-end px-3">
+        <TraceState status={status} tone={lane.tone} />
+      </div>
+    </motion.div>
+  );
+}
+
+function MobileTrace({
+  phase,
+  reduceMotion,
+}: {
+  phase: number;
   reduceMotion: boolean;
 }) {
   return (
-    <>
-      <path
-        d={path}
-        className="fill-none stroke-border stroke-[1.5]"
-        vectorEffect="non-scaling-stroke"
-      />
-      <motion.path
-        d={path}
+    <div className="mt-8 border-y md:hidden">
+      <div className="flex items-center justify-between border-b py-3 font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+        <span>Run log</span>
+        <span>{elapsedTimes[phase]} elapsed</span>
+      </div>
+
+      <div className="relative">
+        <span className="absolute bottom-10 left-[1.15rem] top-10 w-px bg-border" />
+        <motion.span
+          initial={false}
+          animate={{ scaleY: cursorPositions[phase] / 100 }}
+          transition={{
+            duration: reduceMotion ? 0 : 0.62,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+          className="absolute bottom-10 left-[1.15rem] top-10 z-10 w-px origin-top bg-primary"
+        />
+
+        {traceLanes.map((lane, index) => (
+          <MobileLane
+            key={lane.id}
+            lane={lane}
+            phase={phase}
+            reduceMotion={reduceMotion}
+            marksParallelStart={index === 2}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MobileLane({
+  lane,
+  phase,
+  reduceMotion,
+  marksParallelStart,
+}: {
+  lane: TraceLane;
+  phase: number;
+  reduceMotion: boolean;
+  marksParallelStart: boolean;
+}) {
+  const Icon = lane.icon;
+  const styles = toneStyles[lane.tone];
+  const status = getLaneStatus(lane, phase);
+  const isActive = status === "running" || status === "waiting";
+
+  return (
+    <div
+      className={cn(
+        "relative border-b py-5 pl-14 last:border-b-0",
+        isActive && "bg-muted/20",
+        lane.id === "outcome" && "bg-emerald-500/2.5",
+      )}
+    >
+      {marksParallelStart ? (
+        <span className="mb-3 block font-mono text-[0.65rem] font-semibold uppercase tracking-[0.12em] text-muted-foreground">
+          Four actions in parallel
+        </span>
+      ) : null}
+
+      <motion.span
         initial={false}
         animate={{
-          pathLength: state === "idle" ? 0 : 1,
-          opacity: state === "idle" ? 0 : 1,
+          opacity: status === "queued" ? 0.45 : 1,
+          scale: isActive ? 1.08 : 1,
         }}
         transition={{
-          duration: reduceMotion ? 0 : 0.52,
+          duration: reduceMotion ? 0 : 0.25,
           ease: [0.16, 1, 0.3, 1],
         }}
         className={cn(
-          "fill-none stroke-[2.5]",
-          state === "active" ? "stroke-primary" : "stroke-foreground/45",
+          "absolute left-0 top-5 z-20 flex size-9 items-center justify-center rounded-full border bg-background",
+          styles.icon,
+          isActive && styles.glow,
         )}
-        pathLength={1}
-        vectorEffect="non-scaling-stroke"
-      />
-    </>
+      >
+        <Icon className="size-4.5" strokeWidth={1.8} />
+      </motion.span>
+
+      <motion.div
+        initial={false}
+        animate={{ opacity: status === "queued" ? 0.46 : 1 }}
+        transition={{ duration: reduceMotion ? 0 : 0.25 }}
+      >
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p
+              className={cn(
+                "text-sm font-semibold text-foreground",
+                isActive && styles.text,
+              )}
+            >
+              {lane.label}
+            </p>
+            <p className="mt-1 text-sm leading-5 text-muted-foreground">
+              {lane.detail}
+            </p>
+          </div>
+          <TraceState status={status} tone={lane.tone} />
+        </div>
+
+        <div className="relative mt-4 h-2">
+          <span className="absolute inset-x-0 top-1/2 h-px bg-border/70" />
+          {lane.segments.map((segment, index) => (
+            <TraceSpan
+              key={`${lane.id}-mobile-${index}`}
+              segment={segment}
+              phase={phase}
+              tone={lane.tone}
+              reduceMotion={reduceMotion}
+              compact
+            />
+          ))}
+        </div>
+      </motion.div>
+    </div>
   );
 }
 
-function RelayNodeShape({
-  node,
-  state,
+function TraceSpan({
+  segment,
+  phase,
+  tone,
   reduceMotion,
+  compact = false,
 }: {
-  node: RelayNode;
-  state: RelayState;
+  segment: TraceSegment;
+  phase: number;
+  tone: TraceTone;
   reduceMotion: boolean;
+  compact?: boolean;
 }) {
-  const centerY = node.y + node.height / 2;
-  const Icon = node.icon;
+  const styles = toneStyles[tone];
+  const progress = getSegmentProgress(segment, phase);
+  const isWait = segment.kind === "wait";
 
   return (
-    <motion.g
-      initial={false}
-      animate={{ opacity: state === "idle" ? 0.72 : 1 }}
-      transition={{ duration: reduceMotion ? 0 : 0.24 }}
+    <span
+      className={cn(
+        "absolute top-1/2 -translate-y-1/2 overflow-hidden rounded-full",
+        compact ? "h-1.5" : "h-2",
+      )}
+      style={{
+        left: `${segment.start}%`,
+        width: `${segment.end - segment.start}%`,
+      }}
     >
-      <rect
-        x={node.x}
-        y={node.y}
-        width={node.width}
-        height={node.height}
-        rx="12"
+      <motion.span
+        initial={false}
+        animate={{ scaleX: progress, opacity: progress === 0 ? 0 : 1 }}
+        transition={{
+          duration: reduceMotion ? 0 : 0.58,
+          ease: [0.16, 1, 0.3, 1],
+        }}
         className={cn(
-          "stroke-[1.5] transition-colors",
-          state === "active"
-            ? "fill-accent stroke-primary"
-            : state === "complete"
-              ? "fill-surface stroke-foreground/45"
-              : "fill-surface stroke-border",
-        )}
-        vectorEffect="non-scaling-stroke"
-      />
-      {node.step > 1 ? (
-        <circle
-          cx={node.x}
-          cy={centerY}
-          r="5"
-          className={state === "active" ? "fill-primary" : "fill-border"}
-        />
-      ) : null}
-      {node.step < 7 ? (
-        <circle
-          cx={node.x + node.width}
-          cy={centerY}
-          r="5"
-          className={state === "active" ? "fill-primary" : "fill-border"}
-        />
-      ) : null}
-      <text
-        x={node.x + node.width - 16}
-        y={node.y + 20}
-        textAnchor="end"
-        className="fill-muted-foreground font-mono text-[11px] font-medium"
-      >
-        {node.index}
-      </text>
-      <Icon
-        x={node.x + 16}
-        y={centerY - 13}
-        width="22"
-        height="22"
-        strokeWidth="1.7"
-        className={cn(
-          state === "active"
-            ? "text-primary"
-            : state === "complete"
-              ? "text-foreground"
-              : "text-muted-foreground",
+          "block size-full origin-left rounded-full",
+          isWait
+            ? cn("border border-dashed bg-background", styles.border)
+            : styles.bar,
+          progress > 0 && styles.glow,
         )}
       />
-      <text
-        x={node.x + 48}
-        y={centerY + 4}
-        className="fill-foreground text-[15px] font-semibold"
-      >
-        {node.title}
-      </text>
-      <text
-        x={node.x + 16}
-        y={centerY + 28}
-        className="fill-muted-foreground text-[11px]"
-      >
-        {node.detail}
-      </text>
-    </motion.g>
+    </span>
   );
 }
 
-export function AutomationRelay() {
-  const [phase, setPhase] = useState(0);
-  const [isRunning, setIsRunning] = useState(false);
-  const [announcement, setAnnouncement] = useState("");
-  const [completionMessage, setCompletionMessage] = useState(statusMessages[8]);
-  const timersRef = useRef<number[]>([]);
-  const runNumberRef = useRef(0);
-  const isRunningRef = useRef(false);
-  const shouldReduceMotion = Boolean(useReducedMotion());
-
-  const clearTimers = useCallback(() => {
-    timersRef.current.forEach((timer) => window.clearTimeout(timer));
-    timersRef.current.length = 0;
-  }, []);
-
-  const completeWorkflow = useCallback(() => {
-    clearTimers();
-    setPhase(8);
-    setIsRunning(false);
-    isRunningRef.current = false;
-
-    const replayNumber = runNumberRef.current - 1;
-    const message =
-      replayNumber > 0
-        ? `Replay ${replayNumber} complete. Clear next action delivered.`
-        : statusMessages[8];
-
-    setCompletionMessage(message);
-    setAnnouncement(message);
-  }, [clearTimers]);
-
-  useEffect(() => () => clearTimers(), [clearTimers]);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const handleChange = (event: MediaQueryListEvent) => {
-      if (event.matches && isRunningRef.current) {
-        completeWorkflow();
-      }
-    };
-
-    mediaQuery.addEventListener("change", handleChange);
-    return () => mediaQuery.removeEventListener("change", handleChange);
-  }, [completeWorkflow]);
-
-  const runWorkflow = () => {
-    if (isRunningRef.current) return;
-
-    clearTimers();
-    runNumberRef.current += 1;
-    setAnnouncement("Illustrative workflow started.");
-
-    if (shouldReduceMotion) {
-      completeWorkflow();
-      return;
-    }
-
-    setPhase(1);
-    setIsRunning(true);
-    isRunningRef.current = true;
-
-    for (let nextPhase = 2; nextPhase <= 8; nextPhase += 1) {
-      const timer = window.setTimeout(() => {
-        if (nextPhase === 8) {
-          completeWorkflow();
-          return;
-        }
-
-        setPhase(nextPhase);
-      }, (nextPhase - 1) * 540);
-
-      timersRef.current.push(timer);
-    }
+function TraceState({
+  status,
+  tone,
+}: {
+  status: TraceStatus;
+  tone: TraceTone;
+}) {
+  const styles = toneStyles[tone];
+  const labels: Record<TraceStatus, string> = {
+    queued: "Queued",
+    running: "Running",
+    waiting: "Waiting",
+    done: "Done",
   };
 
   return (
-    <MotionConfig reducedMotion="user">
-      <figure className="mt-10">
-        <div className="overflow-hidden rounded-xl border bg-surface/50 p-5 sm:p-7 lg:p-9">
-          <div className="mb-6 flex flex-col gap-5 border-b pb-6 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-              <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
-                Signal relay / illustrative run
-              </p>
-              <p
-                className="mt-2 text-sm font-medium text-foreground"
-                aria-hidden="true"
-              >
-                {phase === 8 ? completionMessage : statusMessages[phase]}
-              </p>
-            </div>
+    <span
+      className={cn(
+        "inline-flex shrink-0 items-center gap-1.5 text-xs font-semibold",
+        status === "queued" ? "text-muted-foreground" : styles.text,
+      )}
+    >
+      <span
+        className={cn(
+          "size-1.5 rounded-full",
+          status === "queued" ? "bg-border" : styles.dot,
+          status === "running" && "animate-pulse",
+        )}
+      />
+      {labels[status]}
+    </span>
+  );
+}
 
-            <Button
-              type="button"
-              size="lg"
-              className="h-11 min-w-40 px-5 aria-disabled:pointer-events-none aria-disabled:opacity-50"
-              onClick={runWorkflow}
-              aria-disabled={isRunning}
-              aria-controls="signal-relay-diagram"
-            >
-              {phase === 8 ? (
-                <RotateCcwIcon className="size-4" />
-              ) : (
-                <PlayIcon className="size-4" />
-              )}
-              {isRunning
-                ? "Workflow running"
-                : phase === 8
-                  ? "Run again"
-                  : "Run workflow"}
-            </Button>
-          </div>
+function getLaneStatus(lane: TraceLane, phase: number): TraceStatus {
+  if (phase < lane.startPhase) return "queued";
+  if (phase >= lane.donePhase) return "done";
+  if (
+    lane.waitingFrom !== undefined &&
+    lane.waitingUntil !== undefined &&
+    phase >= lane.waitingFrom &&
+    phase < lane.waitingUntil
+  ) {
+    return "waiting";
+  }
+  return "running";
+}
 
-          <div
-            id="signal-relay-diagram"
-            role="region"
-            aria-label="Illustrative automation workflow"
-          >
-            <ol className="sr-only">
-              {relayNodes.map((node) => (
-                <li key={node.step}>
-                  {node.index}. {node.title}: {node.detail}
-                </li>
-              ))}
-            </ol>
+function getSegmentProgress(segment: TraceSegment, phase: number) {
+  if (phase < segment.startPhase) return 0;
+  if (phase >= segment.endPhase) return 1;
 
-            <svg
-              viewBox="0 0 1120 520"
-              className="hidden h-auto w-full md:block"
-              aria-hidden="true"
-            >
-              {routes.map((route) => (
-                <RelayRoute
-                  key={route.step}
-                  path={route.path}
-                  state={getRelayState(phase, route.step)}
-                  reduceMotion={shouldReduceMotion}
-                />
-              ))}
-              {relayNodes.map((node) => (
-                <RelayNodeShape
-                  key={node.step}
-                  node={node}
-                  state={getRelayState(phase, node.step)}
-                  reduceMotion={shouldReduceMotion}
-                />
-              ))}
-            </svg>
-
-            <ol className="space-y-3 md:hidden" aria-hidden="true">
-              {relayNodes.map((node) => {
-                const state = getRelayState(phase, node.step);
-                const Icon = node.icon;
-
-                return (
-                  <motion.li
-                    key={node.step}
-                    initial={false}
-                    animate={{ opacity: state === "idle" ? 0.72 : 1 }}
-                    transition={{ duration: shouldReduceMotion ? 0 : 0.24 }}
-                    className={cn(
-                      "flex min-h-20 items-center gap-4 rounded-lg border bg-surface px-4 py-3",
-                      node.branch && "ml-6",
-                      state === "active"
-                        ? "border-primary bg-accent"
-                        : state === "complete"
-                          ? "border-foreground/45"
-                          : "border-border",
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        "font-mono text-xs font-semibold text-muted-foreground",
-                        state === "active" && "text-primary",
-                      )}
-                    >
-                      {node.index}
-                    </span>
-                    <Icon
-                      className={cn(
-                        "size-5 shrink-0 text-muted-foreground",
-                        state === "active" && "text-primary",
-                        state === "complete" && "text-foreground",
-                      )}
-                      strokeWidth={1.7}
-                    />
-                    <span>
-                      <span className="block font-semibold text-foreground">
-                        {node.title}
-                      </span>
-                      <span className="mt-1 block text-sm text-muted-foreground">
-                        {node.detail}
-                      </span>
-                    </span>
-                  </motion.li>
-                );
-              })}
-            </ol>
-          </div>
-        </div>
-
-        <figcaption className="mt-4 max-w-4xl text-sm leading-6 text-muted-foreground">
-          Original illustration of the workflow pattern. It does not reproduce
-          Ventura Travel&apos;s internal interface, topology, customer data, or
-          metrics.
-        </figcaption>
-        <p className="sr-only" aria-live="polite" aria-atomic="true">
-          {announcement}
-        </p>
-      </figure>
-    </MotionConfig>
+  const duration = Math.max(1, segment.endPhase - segment.startPhase);
+  return Math.min(
+    1,
+    Math.max(0.14, (phase - segment.startPhase + 0.2) / duration),
   );
 }

@@ -12,12 +12,12 @@ export function Header() {
     <header className="sticky top-0 z-40 border-b bg-background/95">
       <a
         href="#main-content"
-        className="focus-ring absolute left-4 top-0 -translate-y-full rounded-md bg-primary px-4 py-2 font-semibold text-primary-foreground focus:top-3 focus:translate-y-0"
+        className="focus-ring fixed left-1/2 top-3 z-50 h-px w-px -translate-x-1/2 overflow-hidden whitespace-nowrap rounded-md bg-primary px-4 py-2 font-semibold text-primary-foreground opacity-0 [clip-path:inset(50%)] focus-visible:h-auto focus-visible:w-auto focus-visible:overflow-visible focus-visible:whitespace-normal focus-visible:opacity-100 focus-visible:[clip-path:none]"
       >
         Skip to content
       </a>
 
-      <div className="site-container flex h-[4.5rem] items-center justify-between">
+      <div className="site-container flex h-18 items-center justify-between">
         <a
           href="#top"
           className="focus-ring inline-flex h-11 items-center gap-3 rounded-md font-semibold tracking-[-0.02em]"
@@ -27,7 +27,10 @@ export function Header() {
           <span>Mario Montano</span>
         </a>
 
-        <nav className="flex items-center gap-1" aria-label="Primary navigation">
+        <nav
+          className="flex items-center gap-1"
+          aria-label="Primary navigation"
+        >
           {navigation.map((item, index) => (
             <a
               key={item.href}
